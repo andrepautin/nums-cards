@@ -2,6 +2,8 @@
 
 const BASE_URL = "https://deckofcardsapi.com/api/deck";
 
+
+
 async function getCardValueAndSuit() {
     let response = await axios.get(`${BASE_URL}/new/draw/?count=1`);
     let value = response.data.cards[0].value;
@@ -21,3 +23,23 @@ async function getTwoCardsSameDeck() {
         console.log(value, "of", suit);
     }
 }
+let deckId;
+async function onStart(){
+    let deck = await axios.get(`${BASE_URL}/new/shuffle/?deck_count=1`)
+    deckId = deck.data.deck_id;
+    // console.log(deckId)
+    return deckId
+}
+
+async function createNewCard(){
+    console.log('hi')
+    let deckId = await onStart()
+    // console.log(deckId)
+    let firstCard = await axios.get(`${BASE_URL}/${deckId}/draw/?count=1`);
+    let imgSrc = firstCard.data.cards[0].image
+    $('#img').attr('src', imgSrc)
+}
+
+
+$('button').on('click', createNewCard)
+console.log($('button'))
